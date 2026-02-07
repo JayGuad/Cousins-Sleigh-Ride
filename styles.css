@@ -1,0 +1,176 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Trebuchet MS", "Comic Sans MS", system-ui, sans-serif;
+  background: #bfe4ff;
+  color: #0b1b2b;
+  min-height: 100vh;
+}
+
+.app {
+  min-height: 100vh;
+}
+
+.screen {
+  min-height: 100vh;
+  width: 100%;
+}
+
+.hidden {
+  display: none;
+}
+
+.start-screen {
+  background-image: url("1c8d212d-ca11-4df1-acbb-583c18e26964.jpeg");
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem 1.5rem;
+}
+
+.start-overlay {
+  max-width: 420px;
+  background: rgba(255, 255, 255, 0.78);
+  border-radius: 24px;
+  padding: 2rem 1.5rem;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18);
+}
+
+.start-overlay h1 {
+  margin-top: 0;
+  font-size: 2rem;
+}
+
+.start-overlay p {
+  font-size: 1.05rem;
+  line-height: 1.4;
+}
+
+.primary-button,
+.jump-button {
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 999px;
+  padding: 0.9rem 1.8rem;
+  cursor: pointer;
+  font-weight: 700;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.primary-button {
+  background: #ff4d6d;
+  color: #fff;
+}
+
+.primary-button:active,
+.jump-button:active {
+  transform: translateY(2px);
+}
+
+.load-status {
+  font-size: 0.9rem;
+  margin-top: 1rem;
+  color: #2b4a64;
+}
+
+.game-screen {
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, #96d6ff 0%, #dff5ff 60%, #ffffff 100%);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.hud {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  font-weight: 700;
+  gap: 1rem;
+}
+
+.hud-item {
+  background: rgba(255, 255, 255, 0.8);
+  padding: 0.4rem 0.9rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.canvas-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  padding: 0.5rem 1rem 1rem;
+}
+
+#game-canvas {
+  width: min(100%, 960px);
+  height: min(60vh, 520px);
+  border-radius: 24px;
+  background: #cfeaff;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.15);
+  touch-action: manipulation;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  padding: 1rem 1rem 1.5rem;
+}
+
+.jump-button {
+  background: #ffd84d;
+  color: #3d2b00;
+  font-size: 1.4rem;
+  padding: 1rem 2.5rem;
+}
+
+.game-message {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 20, 30, 0.5);
+  z-index: 10;
+}
+
+.message-card {
+  background: #ffffff;
+  padding: 2rem 2.2rem;
+  border-radius: 24px;
+  text-align: center;
+  max-width: 320px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+}
+
+.message-card h2 {
+  margin-top: 0;
+}
+
+@media (max-width: 600px) {
+  .start-overlay {
+    padding: 1.5rem 1.2rem;
+  }
+
+  .start-overlay h1 {
+    font-size: 1.6rem;
+  }
+
+  .hud {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .jump-button {
+    width: 100%;
+  }
+}
