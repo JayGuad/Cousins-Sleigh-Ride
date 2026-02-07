@@ -134,6 +134,9 @@ function updateHud() {
 }
 
 function startGame() {
+  if (state.running) {
+    return;
+  }
   resetGame();
   state.running = true;
   let lastTime = performance.now();
@@ -439,6 +442,13 @@ startButton.addEventListener("click", () => {
 });
 
 restartButton.addEventListener("click", () => {
+  startGame();
+});
+
+gameMessage.addEventListener("pointerdown", () => {
+  if (!state.gameOver) {
+    return;
+  }
   startGame();
 });
 
