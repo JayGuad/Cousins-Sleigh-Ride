@@ -50,7 +50,7 @@ const state = {
   jumps: 0,
   running: false,
   gameOver: false,
-  headSprites: [],
+  headCropPixels: [],
   headsReady: false,
   mountains: [],
 };
@@ -58,39 +58,31 @@ const state = {
 const sourceImage = new Image();
 startButton.disabled = true;
 sourceImage.onload = () => {
-  state.headSprites = headCropSpecs.map((spec) => cropHead(sourceImage, spec));
+  state.headCropPixels = buildHeadCrops(sourceImage, headCropSpecs);
   state.headsReady = true;
-  loadStatus.textContent = "Ready to ride!";
-  startButton.disabled = false;
+  enableStart("Ready to ride!");
 };
 sourceImage.onerror = () => {
-  loadStatus.textContent = "Image failed to load.";
+  state.headsReady = false;
+  state.headCropPixels = [];
+  enableStart("Image failed to load. Starting without portraits.");
 };
 sourceImage.src = IMAGE_SRC;
 
-function cropHead(image, spec) {
-  const cropWidth = Math.round(spec.w * image.naturalWidth);
-  const cropHeight = Math.round(spec.h * image.naturalHeight);
-  const canvasEl = document.createElement("canvas");
-  canvasEl.width = cropWidth;
-  canvasEl.height = cropHeight;
-  const cropCtx = canvasEl.getContext("2d");
-  const sx = Math.round(spec.x * image.naturalWidth);
-  const sy = Math.round(spec.y * image.naturalHeight);
-  cropCtx.drawImage(
-    image,
-    sx,
-    sy,
-    cropWidth,
-    cropHeight,
-    0,
-    0,
-    cropWidth,
-    cropHeight
-  );
-  const headImage = new Image();
-  headImage.src = canvasEl.toDataURL("image/png");
-  return headImage;
+function enableStart(message) {
+  loadStatus.textContent = message;
+  startButton.disabled = false;
+}
+
+function buildHeadCrops(image, specs) {
+  return specs
+    .map((spec) => ({
+      sx: Math.round(spec.x * image.naturalWidth),
+      sy: Math.round(spec.y * image.naturalHeight),
+      sw: Math.round(spec.w * image.naturalWidth),
+      sh: Math.round(spec.h * image.naturalHeight),
+    }))
+    .filter((crop) => crop.sw > 0 && crop.sh > 0);
 }
 
 function resizeCanvas() {
@@ -343,7 +335,7 @@ function drawSleigh() {
 }
 
 function drawHeads() {
-  if (!state.headsReady || state.headSprites.length === 0) {
+  if (!state.headsReady || state.headCropPixels.length === 0) {
     return;
   }
 
@@ -356,18 +348,18 @@ function drawHeads() {
   ];
 
   positions.forEach((x, index) => {
-    const img = state.headSprites[index % state.headSprites.length];
-    drawCircularImage(img, x, headY, headSize);
+    const crop = state.headCropPixels[index % state.headCropPixels.length];
+    drawCircularCrop(sourceImage, crop, x, headY, headSize);
   });
 }
 
-function drawCircularImage(img, x, y, size) {
-  if (!img.complete || img.width === 0) {
+function drawCircularCrop(image, crop, x, y, size) {
+  if (!image.complete || image.naturalWidth === 0) {
     return;
   }
-  const scale = size / Math.min(img.width, img.height);
-  const drawW = img.width * scale;
-  const drawH = img.height * scale;
+  const scale = size / Math.min(crop.sw, crop.sh);
+  const drawW = crop.sw * scale;
+  const drawH = crop.sh * scale;
   const offsetX = x + (size - drawW) / 2;
   const offsetY = y + (size - drawH) / 2;
 
@@ -375,7 +367,17 @@ function drawCircularImage(img, x, y, size) {
   ctx.beginPath();
   ctx.arc(x + size / 2, y + size / 2, size / 2, 0, Math.PI * 2);
   ctx.clip();
-  ctx.drawImage(img, offsetX, offsetY, drawW, drawH);
+  ctx.drawImage(
+    image,
+    crop.sx,
+    crop.sy,
+    crop.sw,
+    crop.sh,
+    offsetX,
+    offsetY,
+    drawW,
+    drawH
+  );
   ctx.restore();
 }
 
